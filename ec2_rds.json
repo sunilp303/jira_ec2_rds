@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "AWS CloudFormation for JIRA_Single_Instance_With_RDS:  This template installs a single-instance WordPress deployment that uses an Amazon RDS database instance for storage.",
+  "Description" : "AWS CloudFormation for JIRA_Single_Instance_With_RDS:  This template installs a single-instance JIRA that uses an Amazon RDS database instance for storage.",
 
   "Parameters" : {
 
@@ -85,7 +85,7 @@
             "Type": "String"
     },
     "AnsiblerCheckout": {
-            "Default": "ea40c17215bd3ef98cf57b6b4a6e8e3812340c83",
+            "Default": "34d333e1dc7f10922ac7dc502933a4c321cd2779",
             "Description": "The branch/tag/commit to checkout",
             "Type": "String"
     },
@@ -125,13 +125,13 @@
             "Properties": {
                 "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
                           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-                "InstanceType": "t2.micro",
+                "InstanceType": { "Ref" : "InstanceType" },
                 "KeyName": {
                     "Ref": "SshKeyName"
                 },
                 "SecurityGroups": [
                     {
-                        "Ref": "AnsibleSG"
+                        "Ref": "WebServerSecurityGroup"
                     }
                 ],
                 "UserData": {
@@ -203,8 +203,8 @@
 
   "Outputs" : {
     "WebsiteURL" : {
-      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, ":8080/jira"]] },
-      "Description" : "JIRA Website"
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, ":8080"]] },
+      "Description" : "JIRA Website URL"
     }
   }
 }
