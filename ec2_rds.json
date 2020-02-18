@@ -18,7 +18,7 @@
       "Description" : "WebServer EC2 instance type",
       "Type" : "String",
       "Default" : "t3.large",
-      "AllowedValues" : [ "t1.micro", "t2.micro", "t2.small", "t2.medium", "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge" ],
+      "AllowedValues" : [ "t1.micro", "t2.micro", "t2.small", "t2.medium", "t3.large", "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge" ],
       "ConstraintDescription" : "must be a valid EC2 instance type."
     },
 
@@ -56,7 +56,7 @@
       "NoEcho": "true",
       "Description" : "The jira database admin account password",
       "Type": "String",
-      "MinLength": "8",
+      "MinLength": "4",
       "MaxLength": "41",
       "AllowedPattern" : "[a-zA-Z0-9]*",
       "ConstraintDescription" : "must contain only alphanumeric characters."
@@ -101,6 +101,7 @@
       "t2.micro"    : { "Arch" : "HVM64"  },
       "t2.small"    : { "Arch" : "HVM64"  },
       "t2.medium"   : { "Arch" : "HVM64"  },
+      "t3.large"    : { "Arch" : "HVM64"  },
       "m3.medium"   : { "Arch" : "PV64"   },
       "m3.large"    : { "Arch" : "PV64"   },
       "m3.xlarge"   : { "Arch" : "PV64"   },
@@ -115,12 +116,13 @@
   },
    "Resources": {
         "Ec2Instance": {
+            "Type": "AWS::EC2::Instance",
             "Properties": {
                 "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
                           { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
                 "InstanceType": { "Ref" : "InstanceType" },
                 "KeyName": {
-                    "Ref": "SshKeyName"
+                    "Ref": "KeyName"
                 },
                 "SecurityGroups": [
                     {
@@ -138,21 +140,17 @@
                                 "yum install -y ansible git\n",
                                 "echo \"localhost ansible_connection=local\" > /etc/ansible/hosts\n",
                                 "ansible-pull -U ", {"Ref": "AnsibleRepository"},
-                                " -C ", {"Ref": "AnsibleCheckout"},
-								"-e jira_database_host=", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},
+                                "-e jira_database_host=", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},
                                 " ", {"Ref": "AnsiblePlaybook"}
                             ]
                         ]
                     }
                 }
-            },
-            "Type": "AWS::EC2::Instance"
-        }
-    },
-	"WaitHandle" : {
+            }
+        },
+    "WaitHandle" : {
       "Type" : "AWS::CloudFormation::WaitConditionHandle"
     },
-
     "WaitCondition" : {
       "Type" : "AWS::CloudFormation::WaitCondition",
       "DependsOn" : "Ec2Instance",
@@ -160,8 +158,8 @@
         "Handle" : {"Ref" : "WaitHandle"},
         "Timeout" : "600"
       }
-    },
-	"DBInstance" : {
+    },    
+	 "DBInstance" : {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
         "DBName"            : { "Ref" : "DBName" },
@@ -193,10 +191,9 @@
       }
     }
   },
-
   "Outputs" : {
     "WebsiteURL" : {
-      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServer", "PublicDnsName" ]}, ":8080"]] },
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "Ec2Instance", "PublicDnsName" ]}, ":8080"]] },
       "Description" : "JIRA Website URL"
     }
   }
