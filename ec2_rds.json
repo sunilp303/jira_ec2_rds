@@ -140,7 +140,7 @@
                                 "/opt/aws/bin/cfn-signal -e 0 '", { "Ref" : "WaitHandle" }, "'\n",
                                 "yum install epel-release -y\n",
                                 "yum install -y ansible git\n",
-                                "pip install ansible",
+                                "pip install ansible\n",
                                 "echo \"localhost ansible_connection=local\" > /etc/ansible/hosts\n",
                                 "ansible-pull -U ", {"Ref": "AnsibleRepository"},
                                 " -C ", {"Ref": "AnsibleCheckout"},
