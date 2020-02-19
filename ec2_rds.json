@@ -23,7 +23,7 @@
     },
 
     "DBClass" : {
-      "Default" : "db.t1.micro",
+      "Default" : "db.t2.micro",
       "Description" : "Database instance class",
       "Type" : "String",
       "AllowedValues" : [ "db.t1.micro", "db.t2.micro", "db.t2.small", "db.t2.medium", "db.m3.medium", "db.m3.large", "db.m3.xlarge", "db.m3.2xlarge" ],
@@ -52,11 +52,11 @@
     },
 
     "DBPassword" : {
-      "Default": "jira",
+      "Default": "jirapasschangeit",
       "NoEcho": "true",
       "Description" : "The jira database admin account password",
       "Type": "String",
-      "MinLength": "4",
+      "MinLength": "8",
       "MaxLength": "41",
       "AllowedPattern" : "[a-zA-Z0-9]*",
       "ConstraintDescription" : "must contain only alphanumeric characters."
@@ -85,7 +85,7 @@
             "Type": "String"
     },
     "AnsiblerCheckout": {
-            "Default": "34d333e1dc7f10922ac7dc502933a4c321cd2779",
+            "Default": "6bba3bc87142d5311313032d865167b54dc2adc1",
             "Description": "The branch/tag/commit to checkout",
             "Type": "String"
     },
@@ -135,6 +135,10 @@
                             "",
                             [
                                 "#!/bin/bash\n",
+                                "yum update -y aws-cfn-bootstrap\n",
+                                "/opt/aws/bin/cfn-init -s ", { "Ref" : "AWS::StackId" }, " -r Ec2Instance ",
+                                "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                                "/opt/aws/bin/cfn-signal -e $? '", { "Ref" : "WaitHandle" }, "'\n",
                                 "yum update -y\n",
                                 "yum install epel-release -y\n",
                                 "yum install -y ansible git\n",
