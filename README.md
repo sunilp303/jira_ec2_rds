@@ -12,3 +12,8 @@
 4. ``` aws cloudformation create-stack --stack-name jirastack --template-body file://ec2_rds.json --parameters ParameterKey=KeyName,ParameterValue=KEYNAME ```
 5. ``` aws cloudformation delete-stack --stack-name jirastack ```
 ---
+It Approximately takes 10-15 for building up the EC2 and  RDS.
+
+Tested for US-WEST-2
+
+**You should see the Jira setup Screen.**
