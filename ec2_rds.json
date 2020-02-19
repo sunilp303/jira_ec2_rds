@@ -84,7 +84,7 @@
             "Description": "The git repository of JIRA playbooks",
             "Type": "String"
     },
-    "AnsiblerCheckout": {
+    "AnsibleCheckout": {
             "Default": "6bba3bc87142d5311313032d865167b54dc2adc1",
             "Description": "The branch/tag/commit to checkout",
             "Type": "String"
@@ -144,6 +144,7 @@
                                 "yum install -y ansible git\n",
                                 "echo \"localhost ansible_connection=local\" > /etc/ansible/hosts\n",
                                 "ansible-pull -U ", {"Ref": "AnsibleRepository"},
+                                " -C ", {"Ref": "AnsibleCheckout"},
                                 "-e jira_database_host=", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},
                                 " ", {"Ref": "AnsiblePlaybook"}
                             ]
