@@ -109,9 +109,9 @@
     },
 
     "AWSRegionArch2AMI" : {
-      "us-east-1"      : { "PV64" : "ami-00f0abdef923519b0", "HVM64" : "ami-0ff8a91507f77f867" },
-      "us-west-2"      : { "PV64" : "ami-afe1c0d7", "HVM64" : "ami-a0cfeed8" },
-      "us-west-1"      : { "PV64" : "ami-06819ed4f6553bd1e", "HVM64" : "ami-0bdb828fd58c52235" }
+      "us-east-1"      : { "PV64" : "ami-00f0abdef923519b0", "HVM64" : "ami-062f7200baf2fa504" },
+      "us-west-2"      : { "PV64" : "ami-afe1c0d7", "HVM64" : "ami-04590e7389a6e577c " },
+      "us-west-1"      : { "PV64" : "ami-06819ed4f6553bd1e", "HVM64" : "ami-03caa3f860895f82e" }
     }
   },
    "Resources": {
@@ -135,12 +135,14 @@
                             "",
                             [
                                 "#!/bin/bash\n",
-                                "yum update -y\n",
-                                "yum update -y aws-cfn-bootstrap\n",
-                                "/opt/aws/bin/cfn-signal -e 0 '", { "Ref" : "WaitHandle" }, "'\n",
-                                "yum install epel-release -y\n",
-                                "yum install -y ansible git\n",
-                                "pip install ansible\n",
+                                "sudo yum update -y\n",
+                                "sudo yum update -y aws-cfn-bootstrap\n",
+                                "sudo /opt/aws/bin/cfn-signal -e 0 '", { "Ref" : "WaitHandle" }, "'\n",
+                                "sudo yum install epel-release -y\n",
+                                "sudo yum install -y ansible git\n",
+                                "sudo pip install ansible\n",
+                                "sudo yum remove -y  java-1.7.0-openjdk\n",
+                                "sudo yum install -y java-1.8.0\n",
                                 "echo \"localhost ansible_connection=local\" > /etc/ansible/hosts\n",
                                 "ansible-pull -U ", {"Ref": "AnsibleRepository"},
                                 " -C ", {"Ref": "AnsibleCheckout"},
