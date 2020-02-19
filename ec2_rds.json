@@ -139,14 +139,14 @@
                                 "sudo yum update -y aws-cfn-bootstrap\n",
                                 "sudo /opt/aws/bin/cfn-signal -e 0 '", { "Ref" : "WaitHandle" }, "'\n",
                                 "sudo yum install epel-release -y\n",
-                                "sudo yum install -y ansible2 git\n",
-                                "sudo pip install ansible\n",
+                                "sudo yum install git -y\n",
+                                "sudo amazon-linux-extras install ansible2 -y\n",
                                 "sudo yum remove -y  java-1.7.0-openjdk\n",
                                 "sudo yum install -y java-1.8.0\n",
                                 "sudo echo \"localhost ansible_connection=local\" > /etc/ansible/hosts\n",
                                 "sudo ansible-pull -U ", {"Ref": "AnsibleRepository"},
                                 " -C ", {"Ref": "AnsibleCheckout"},
-                                "-e jira_database_host=", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},
+                                " -e jira_database_host=", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},
                                 " ", {"Ref": "AnsiblePlaybook"}
                             ]
                         ]
