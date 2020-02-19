@@ -85,7 +85,7 @@
             "Type": "String"
     },
     "AnsibleCheckout": {
-            "Default": "6bba3bc87142d5311313032d865167b54dc2adc1",
+            "Default": "0929172f46d2e7d7e62a69928c2a615c9aceb3e5",
             "Description": "The branch/tag/commit to checkout",
             "Type": "String"
     },
